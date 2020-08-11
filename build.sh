@@ -215,7 +215,7 @@ get_armbian()
     info "Armbian file to process is '${ARMBIAN_IMG_XZ}'."
 
     # check if extracted image is in there to save time
-    if [ -n "$(ls Armbian*.img || true)" ] ; then
+    if [ -n "$(ls armbian || true)" ] ; then
         # image already extracted nothing to do
         notice "Armbian image already extracted"
     else
@@ -237,7 +237,7 @@ get_armbian()
     fi
 
     # get image filename
-    ARMBIAN_IMG=armbian
+    ARMBIAN_IMG="$(ls armbian || true)"
 
     # imge integrity
     info "Image integrity assured via sha256sum."
