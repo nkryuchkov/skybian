@@ -31,7 +31,7 @@ PARTS_SKYWIRE_DIR=${PARTS_DIR}/skywire
 PARTS_TOOLS_DIR=${PARTS_DIR}/tools
 
 # Image related variables.
-ARMBIAN_IMG_7z=""
+ARMBIAN_IMG_XZ=""
 ARMBIAN_IMG=""
 ARMBIAN_VERSION=""
 ARMBIAN_KERNEL_VERSION=""
@@ -174,7 +174,7 @@ get_skywire()
 
 download_armbian()
 {
-  local _DST=${PARTS_ARMBIAN_DIR}/armbian.7z # Download destination file name.
+  local _DST=${PARTS_ARMBIAN_DIR}/armbian.xz # Download destination file name.
 
   info "Downloading image from ${ARMBIAN_DOWNLOAD_URL} to ${_DST} ..."
   wget -c "${ARMBIAN_DOWNLOAD_URL}" -O "${_DST}" ||
@@ -184,7 +184,7 @@ download_armbian()
 # Get the latest ARMBIAN image for Orange Pi Prime
 get_armbian()
 {
-  local ARMBIAN_IMG_7z="armbian.7z"
+  local ARMBIAN_IMG_XZ="armbian.xz"
 
     # change to dest dir
     cd "${PARTS_ARMBIAN_DIR}" ||
@@ -194,7 +194,7 @@ get_armbian()
     info "Getting Armbian image, clearing dest dir first."
 
     # test if we have a file in there
-    if [ -r armbian.7z ] ; then
+    if [ -r armbian.xz ] ; then
 
         # use already downloaded image file
         notice "Reusing already downloaded file"
@@ -207,7 +207,7 @@ get_armbian()
     fi
 
     # extract and check it's integrity
-    info "Armbian file to process is '${ARMBIAN_IMG_7z}'."
+    info "Armbian file to process is '${ARMBIAN_IMG_XZ}'."
 
     # check if extracted image is in there to save time
     if [ -n "$(ls Armbian*.img || true)" ] ; then
@@ -216,9 +216,9 @@ get_armbian()
     else
         # extract armbian
         info "Extracting image..."
-        if ! 7z e "${ARMBIAN_IMG_7z}" ; then
+        if ! 7z e "${ARMBIAN_IMG_XZ}" ; then
             error "Extracting failed, file is corrupt? Re-run the script to get it right."
-            rm "${ARMBIAN_IMG_7z}" &> /dev/null || true
+            rm "${ARMBIAN_IMG_XZ}" &> /dev/null || true
             exit 1
         fi
     fi
@@ -440,7 +440,7 @@ clean_image()
 clean_output_dir()
 {
   # Clean parts.
-  cd "${PARTS_ARMBIAN_DIR}" && find . -type f ! -name '*.7z' -delete
+  cd "${PARTS_ARMBIAN_DIR}" && find . -type f ! -name '*.xz' -delete
   cd "${PARTS_SKYWIRE_DIR}" && find . -type f ! -name '*.tar.gz' -delete && rm -rf bin
   cd "${FINAL_IMG_DIR}" && find . -type f ! -name '*.tar.xz' -delete
 
