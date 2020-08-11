@@ -174,11 +174,16 @@ get_skywire()
 
 download_armbian()
 {
-  local _DST=${PARTS_ARMBIAN_DIR}/armbian.xz # Download destination file name.
+  local _DST=${PARTS_ARMBIAN_DIR}/armbian.xz # Download destination file name (image).
+  local _DST_SUM=${PARTS_ARMBIAN_DIR}/armbian.xz.sha # Download destination file name (checksum).
 
   info "Downloading image from ${ARMBIAN_DOWNLOAD_URL} to ${_DST} ..."
   wget -c "${ARMBIAN_DOWNLOAD_URL}" -O "${_DST}" ||
-    (error "Download failed." && return 1)
+    (error "Image download failed." && return 1)
+
+  info "Downloading checksum from ${ARMBIAN_SHASUM_DOWNLOAD_URL} to ${_DST_SUM} ..."
+  wget -c "${ARMBIAN_SHASUM_DOWNLOAD_URL}" -O "${_DST_SUM}" ||
+    (error "Checksum download failed." && return 1)
 }
 
 # Get the latest ARMBIAN image for Orange Pi Prime
