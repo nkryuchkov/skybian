@@ -174,32 +174,29 @@ get_skywire()
 
 download_armbian()
 {
-  local _DST=${PARTS_ARMBIAN_DIR}/armbian.xz # Download destination file name (image).
-  local _DST_SUM=${PARTS_ARMBIAN_DIR}/armbian.xz.sha # Download destination file name (checksum).
-
-  info "Downloading image from ${ARMBIAN_DOWNLOAD_URL} to ${_DST} ..."
-  wget -c "${ARMBIAN_DOWNLOAD_URL}" -O "${_DST}" ||
+  info "Downloading image from ${ARMBIAN_DOWNLOAD_URL}..."
+  wget -c "${ARMBIAN_DOWNLOAD_URL}" ||
     (error "Image download failed." && return 1)
 
-  info "Downloading checksum from ${ARMBIAN_SHASUM_DOWNLOAD_URL} to ${_DST_SUM} ..."
-  wget -c "${ARMBIAN_SHASUM_DOWNLOAD_URL}" -O "${_DST_SUM}" ||
+  info "Downloading checksum from ${ARMBIAN_DOWNLOAD_URL}.sha..."
+  wget -c "${ARMBIAN_DOWNLOAD_URL}.sha" ||
     (error "Checksum download failed." && return 1)
 }
 
 # Get the latest ARMBIAN image for Orange Pi Prime
 get_armbian()
 {
-  local ARMBIAN_IMG_XZ="armbian.xz"
-
     # change to dest dir
     cd "${PARTS_ARMBIAN_DIR}" ||
       (error "Failed to cd." && return 1)
+
+    local ARMBIAN_IMG_XZ="$(ls Armbian*img.xz)"
 
     # user info
     info "Getting Armbian image, clearing dest dir first."
 
     # test if we have a file in there
-    if [ -r armbian.xz ] ; then
+    if [ -r "${ARMBIAN_IMG_XZ}" ] ; then
 
         # use already downloaded image file
         notice "Reusing already downloaded file"
@@ -209,10 +206,20 @@ get_armbian()
 
         # download it
         download_armbian
+
+        local ARMBIAN_IMG_XZ="$(ls Armbian*img.xz)"
     fi
 
     # extract and check it's integrity
     info "Armbian file to process is '${ARMBIAN_IMG_XZ}'."
+
+    # check integrity
+    info "Testing image integrity..."
+    if ! $(command -v sha256sum) -c --status -- *.sha ; then
+        error "Integrity of the image is compromised, re-run the script to get it right."
+        rm -- armbian *txt *sha *xz &> /dev/null || true
+        exit 1
+    fi
 
     # check if extracted image is in there to save time
     if [ -n "$(ls armbian || true)" ] ; then
@@ -226,14 +233,6 @@ get_armbian()
             rm "${ARMBIAN_IMG_XZ}" &> /dev/null || true
             exit 1
         fi
-    fi
-
-    # check integrity
-    info "Testing image integrity..."
-    if ! $(command -v sha256sum) -c --status -- *.sha ; then
-        error "Integrity of the image is compromised, re-run the script to get it right."
-        rm -- *img *txt *sha *7z &> /dev/null || true
-        exit 1
     fi
 
     # get image filename
