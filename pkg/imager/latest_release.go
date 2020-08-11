@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	ghOwner = "SkycoinProject"
+	ghOwner = "nkryuchkov"
 	ghRepo  = "skybian"
 )
 
