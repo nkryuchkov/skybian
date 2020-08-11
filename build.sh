@@ -237,7 +237,7 @@ get_armbian()
     fi
 
     # get image filename
-    ARMBIAN_IMG=$(ls Armbian*.img || true)
+    ARMBIAN_IMG=armbian
 
     # imge integrity
     info "Image integrity assured via sha256sum."
