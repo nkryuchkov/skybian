@@ -190,7 +190,7 @@ get_armbian()
     cd "${PARTS_ARMBIAN_DIR}" ||
       (error "Failed to cd." && return 1)
 
-    local ARMBIAN_IMG_XZ="$(ls Armbian*img.xz)"
+    local ARMBIAN_IMG_XZ="$(ls Armbian*img.xz || true)"
 
     # user info
     info "Getting Armbian image, clearing dest dir first."
@@ -207,7 +207,7 @@ get_armbian()
         # download it
         download_armbian
 
-        local ARMBIAN_IMG_XZ="$(ls Armbian*img.xz)"
+        local ARMBIAN_IMG_XZ="$(ls Armbian*img.xz || true)"
     fi
 
     # extract and check it's integrity
@@ -222,7 +222,7 @@ get_armbian()
     fi
 
     # check if extracted image is in there to save time
-    if [ -n "$(ls armbian || true)" ] ; then
+    if [ -n "$(ls Armbian*.img || true)" ] ; then
         # image already extracted nothing to do
         notice "Armbian image already extracted"
     else
@@ -236,7 +236,7 @@ get_armbian()
     fi
 
     # get image filename
-    ARMBIAN_IMG="$(ls armbian || true)"
+    ARMBIAN_IMG=$(ls Armbian*.img || true)
 
     # imge integrity
     info "Image integrity assured via sha256sum."
